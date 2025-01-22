@@ -39,12 +39,12 @@ function handleBucketList() {
 
     activities.forEach((activity, index) => {
       let categoryContainer = document.querySelector(
-        `[data-category="${activity.category}"]`
+            `[data-category="${activity.category}"]`
       );
 
       if (!categoryContainer) {
         categoryContainer = document.createElement("div");
-        categoryContainer.setAttribute("data-category", activity.category);
+            categoryContainer.setAttribute("data-category", activity.category);
 
         categoryContainer.innerHTML = `
                         <h2 class="category-title">${activity.category}</h2>
