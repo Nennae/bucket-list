@@ -34,48 +34,61 @@ function handleBucketList() {
     displayListItems();
   });
 
-  function displayListItems() {
-    bucketLists.innerHTML = ""; //clear previous content to prevent multiples when re-rendering
+      function displayListItems() {
+        bucketLists.innerHTML = ""; // Clear previous content to prevent duplicates when re-rendering
 
-    activities.forEach((activity, index) => {
-      let categoryContainer = document.querySelector(
+        activities.forEach((activity, index) => {
+          let categoryContainer = document.querySelector(
             `[data-category="${activity.category}"]`
-      );
+          );
 
-      if (!categoryContainer) {
-        categoryContainer = document.createElement("div");
+          if (!categoryContainer) {
+            categoryContainer = document.createElement("div");
             categoryContainer.setAttribute("data-category", activity.category);
 
-        categoryContainer.innerHTML = `
-                        <h2 class="category-title">${activity.category}</h2>
-                        <div class="items-container"></div>
-                        `;
-        bucketLists.appendChild(categoryContainer);
+            categoryContainer.innerHTML = `
+        <h2 class="category-title">${activity.category}</h2>
+        <div class="items-container"></div>
+      `;
+            bucketLists.appendChild(categoryContainer);
+          }
+
+          const itemsContainer =
+            categoryContainer.querySelector(".items-container");
+          const itemElement = document.createElement("div");
+          itemElement.setAttribute("data-index", index);
+
+          itemElement.innerHTML = `
+      <p class="item-name">${activity.name}</p>
+      <button class="delete-btn">Delete</button>
+      <label for="done-check-${index}">Done</label>
+      <input type="checkbox" id="done-check-${index}" class="done-check" ${
+            activity.isDone ? "checked" : ""
+          } />
+    `;
+
+          // Delete Button Logic
+          const deleteBtn = itemElement.querySelector(".delete-btn");
+          deleteBtn.addEventListener("click", () => {
+            deleteActivity(index);
+          });
+
+          // Checkbox Change Logic
+          const doneCheckbox = itemElement.querySelector(".done-check");
+          doneCheckbox.addEventListener("change", (e) => {
+            activities[index].isDone = e.target.checked; // Update the isDone property
+            saveToLocalStorage(); // Save the updated array to localStorage
+          });
+
+          itemsContainer.appendChild(itemElement);
+        });
+
+        function deleteActivity(index) {
+          activities.splice(index, 1); // Remove activity from the array
+          saveToLocalStorage(); // Save the updated list to localStorage
+          displayListItems(); // Re-render the list
+        }
       }
 
-      const itemsContainer =
-        categoryContainer.querySelector(".items-container");
-      const itemElement = document.createElement("div");
-      itemElement.setAttribute("data-index", index);
-
-      itemElement.innerHTML = `
-                  <p class="item-name">${activity.name}</p>
-                  <button class="delete-btn">Delete</button>
-                  <label for="done-check">Done</label>
-                  <input type="checkbox" class="done-check" value=${activity.isDone}/>
-                  `;
-      const deleteBtn = itemElement.querySelector(".delete-btn");
-      deleteBtn.addEventListener("click", () => {
-        deleteActivity(index);
-      });
-
-      itemsContainer.appendChild(itemElement);
-    });
-    function deleteActivity(index) {
-      activities.splice(index, 1); // removes activity from the array
-      saveToLocalStorage(); // saves updated list to localstorage
-      displayListItems(); // re-render the list
-    }
-  }
 }
 handleBucketList();
