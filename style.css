@@ -64,7 +64,11 @@ h6 {
             padding: 0 2em;
 
             .item-name {
-                  margin-bottom: .5em;
+                  margin: .5em 0;
+            }
+            button,
+            label {
+                  font-size: .7rem;
             }
       }
 }
